@@ -1,13 +1,20 @@
 import scrapy
 
 class BlogSpider(scrapy.Spider):
-    name = 'blogspider'
-    start_urls = ['https://blog.scrapinghub.com']
+    name = 'newsSpider'
+    start_urls = ['https://toyotanews.pressroom.toyota.com/toyota/releases/']
 
     def parse(self, response):
-        for title in response.css('.post-header>h2'):
-            yield {'title': title.css('a ::text').extract_first()}
+        lines = response.css('#leftContentArea').extract()[0]
+        Articles = response.css('div.remainingArticles').extract()
+        headlines = response.css('h2.headline a::text').extract()
 
-        for next_page in response.css('div.prev-post > a'):
-            yield response.follow(next_page, self.parse)
-        print(response.text)
+        #print(Articles)
+        #print(lines)
+        for headline in headlines:
+            print(headline)
+        
+        # next_page = response.css('.tekpagination a::attr(href)').extract_first()
+        # if next_page is not None:
+        #     next_page = response.urljoin(next_page)
+        #     yield scrapy.Request(next_page, callback=self.parse)
